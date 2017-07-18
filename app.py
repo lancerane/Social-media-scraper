@@ -4,7 +4,10 @@ from flask import Flask,render_template,request, send_file
 import pandas as pd
 from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
+# from redis import Redis
 from worker import conn
+import IPython
+import time
 
 app = Flask(__name__)
 q = Queue(connection=conn)
@@ -25,7 +28,19 @@ def main():
 
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
         # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
-        dataframe, inaccessible = q.enqueue(scrape_and_aggregate(app.vars['domains']), 'http://heroku.com')
+
+        try:
+
+            job = q.enqueue(scrape_and_aggregate, [app.vars['domains']])
+
+            # job = q.enqueue_call(func=scrape_and_aggregate, args=('http://app.rawgraphs.io/',), result_ttl=5000)
+        except Exception as e:
+    	       return str(e)
+
+
+        while job.result == None:
+            time.sleep(25)
+        IPython.embed()
         complete_msg = ''
         if inaccessible !=[]:
             complete_msg += 'Unable to parse: %s.\n' %inaccessible
