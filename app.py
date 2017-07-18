@@ -27,12 +27,11 @@ def main():
 
             dataframe.to_csv('test.csv', index=False)
             complete_msg += '\nFile ready'
+            return render_template('done_screen.html', complete_msg=complete_msg)
 
         else:
             complete_msg += '\nNo data to save'
-
-
-        return render_template('done_screen.html', complete_msg=complete_msg)
+            return render_template('done_screen_no_data.html', complete_msg=complete_msg)
 
 @app.route('/test.csv')
 def files_tut():
