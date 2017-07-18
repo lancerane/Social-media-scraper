@@ -27,8 +27,11 @@ def main():
             complete_msg += 'Unable to parse: %s.\n' %unaccessible
 
         if dataframe.shape[0] > 0:
-            dataframe.to_csv(app.vars['path'], index=False)
-            complete_msg += '\nFile saved to \"%s\"' % app.vars['path']
+            try:
+                dataframe.to_csv(app.vars['path'], index=False)
+                complete_msg += '\nFile saved to \"%s\"' % app.vars['path']
+            except:
+                complete_msg += 'Could not save to %s' % app.vars['path']
         else:
             complete_msg += '\nNo data to save'
 
