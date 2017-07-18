@@ -37,20 +37,20 @@ def scrape_and_aggregate(domains):
                 continue
 
     # Run each url through SM apis to get share counts. Collect in a dictionary
-    dct = {'url':[], 'facebook':[], 'pinterest':[], 'google':[], 'reddit ups':[], 'reddit downs':[], 'linkedin':[]}
+    dct = {'URL':[], 'facebook':[], 'pinterest':[], 'google':[], 'linkedin':[]}
 
     for url in urls:
         # Find any '//' after http:// and convert to '/'
         idx = url.find('/')
         cleaned_url = url[:idx+1] + url[idx+1:].replace('//', '/')
         try:
-            counts = socialshares.fetch(cleaned_url, ['facebook', 'pinterest', 'google', 'reddit', 'linkedin'])
+            counts = socialshares.fetch(cleaned_url, ['facebook', 'pinterest', 'google', 'linkedin']) # can also query reddit, but unreliable
 
         # If no data, skip that url
         except TypeError:
             continue
 
-        dct['url'].append(cleaned_url)
+        dct['URL'].append(cleaned_url)
         if 'facebook' in counts:
             dct['facebook'].append(counts['facebook']['share_count'])
         else:
@@ -63,20 +63,12 @@ def scrape_and_aggregate(domains):
             dct['google'].append(counts['google'])
         else:
             dct['google'].append('na')
-        if 'reddit ups' in counts:
-            dct['reddit ups'].append(counts['reddit']['ups'])
-        else:
-            dct['reddit ups'].append('na')
-        if 'reddit downs' in counts:
-            dct['reddit downs'].append(counts['reddit']['downs'])
-        else:
-            dct['reddit downs'].append('na')
         if 'linkedin' in counts:
             dct['linkedin'].append(counts['linkedin'])
         else:
             dct['linkedin'].append('na')
 
     dataframe = pd.DataFrame(dct)
-    dataframe = dataframe.set_index('url').reset_index()
+    dataframe = dataframe.set_index('URL').reset_index()
 
     return dataframe, inaccessible
