@@ -4,9 +4,7 @@ from flask import Flask,render_template,request, send_file
 import pandas as pd
 from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
-# from redis import Redis
 from worker import conn
-import IPython
 import time
 
 app = Flask(__name__)
@@ -39,8 +37,9 @@ def main():
 
 
         while job.result == None:
-            time.sleep(25)
-        IPython.embed()
+            time.sleep(10)
+        dataframe = job.result[0]
+
         complete_msg = ''
         if inaccessible !=[]:
             complete_msg += 'Unable to parse: %s.\n' %inaccessible
