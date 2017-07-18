@@ -13,4 +13,5 @@ pandas==0.20.3
 urllib3==1.21.1
 socialshares==1.1.0
 beautifulsoup4==4.4.1
-
+rq==0.8.0
+redis==2.10.3

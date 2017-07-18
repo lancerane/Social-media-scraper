@@ -3,8 +3,11 @@
 from flask import Flask,render_template,request, send_file
 import pandas as pd
 from scrape_and_aggregate import scrape_and_aggregate
+from rq import Queue
+from worker import conn
 
 app = Flask(__name__)
+q = Queue(connection=conn)
 
 app.vars = {}
 
@@ -21,7 +24,8 @@ def main():
         app.vars['domains'] = [domain for domain in user_domains if domain != '']
 
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
-        dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
+        # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
+        dataframe, inaccessible = q.enqueue(scrape_and_aggregate(app.vars['domains'], 'http://heroku.com')
         complete_msg = ''
         if inaccessible !=[]:
             complete_msg += 'Unable to parse: %s.\n' %inaccessible
