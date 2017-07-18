@@ -36,8 +36,8 @@ def main():
     	       return str(e)
 
 
-        while job.result == None:
-            time.sleep(10)
+        while job.is_finished == False:
+            time.sleep(25)
         dataframe = job.result[0]
 
         complete_msg = ''
