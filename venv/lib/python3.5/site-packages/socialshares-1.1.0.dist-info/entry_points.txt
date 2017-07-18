@@ -1,0 +1,3 @@
+[console_scripts]
+socialshares = socialshares.command:main
+
