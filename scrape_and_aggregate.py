@@ -7,13 +7,13 @@ def scrape_and_aggregate(domains):
 
     # Try to convert each url into a html document
     urls = []
-    unaccessible = []
+    inaccessible = []
     for domain in domains:
         try:
             with urllib.request.urlopen(domain) as response:
                html = response.read()
         except:
-            unaccessible.append(domain)
+            inaccessible.append(domain)
             continue
 
         soup = BeautifulSoup(html,'html.parser')
@@ -55,13 +55,28 @@ def scrape_and_aggregate(domains):
             dct['facebook'].append(counts['facebook']['share_count'])
         else:
             dct['facebook'].append('na')
-        dct['pinterest'].append(counts['pinterest'])
-        dct['google'].append(counts['google'])
-        dct['reddit ups'].append(counts['reddit']['ups'])
-        dct['reddit downs'].append(counts['reddit']['downs'])
-        dct['linkedin'].append(counts['linkedin'])
+        if 'pinterest' in counts:
+            dct['pinterest'].append(counts['pinterest'])
+        else:
+            dct['pinterest'].append('na')
+        if 'google' in counts:
+            dct['google'].append(counts['google'])
+        else:
+            dct['google'].append('na')
+        if 'reddit ups' in counts:
+            dct['reddit ups'].append(counts['reddit']['ups'])
+        else:
+            dct['reddit ups'].append('na')
+        if 'reddit downs' in counts:
+            dct['reddit downs'].append(counts['reddit']['downs'])
+        else:
+            dct['reddit downs'].append('na')
+        if 'linkedin' in counts:
+            dct['linkedin'].append(counts['linkedin'])
+        else:
+            dct['linkedin'].append('na')
 
     dataframe = pd.DataFrame(dct)
     dataframe = dataframe.set_index('url').reset_index()
 
-    return dataframe, unaccessible
+    return dataframe, inaccessible

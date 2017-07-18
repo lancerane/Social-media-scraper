@@ -20,11 +20,11 @@ def main():
         user_domains = [request.form['domain_1'], request.form['domain_2'], request.form['domain_3'], request.form['domain_4'], request.form['domain_5']]
         app.vars['domains'] = [domain for domain in user_domains if domain != '']
 
-        # Run scraper and aggregate share counts into a dataframe. Unaccessible gives restricted domains
-        dataframe, unaccessible = scrape_and_aggregate(app.vars['domains'])
+        # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
+        dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
         complete_msg = ''
-        if unaccessible !=[]:
-            complete_msg += 'Unable to parse: %s.\n' %unaccessible
+        if inaccessible !=[]:
+            complete_msg += 'Unable to parse: %s.\n' %inaccessible
 
         # Test if dataframe holds any data
         if dataframe.shape[0] > 0:
