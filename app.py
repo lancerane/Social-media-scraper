@@ -25,7 +25,7 @@ def main():
 
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
         # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
-        dataframe, inaccessible = q.enqueue(scrape_and_aggregate(app.vars['domains'], 'http://heroku.com')
+        dataframe, inaccessible = q.enqueue(scrape_and_aggregate(app.vars['domains']), 'http://heroku.com')
         complete_msg = ''
         if inaccessible !=[]:
             complete_msg += 'Unable to parse: %s.\n' %inaccessible
