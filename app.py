@@ -11,7 +11,7 @@ app.vars = {}
 def main():
 
     if request.method == 'GET':
-        return render_template('domain_enter2.html')
+        return render_template('domain_enter.html')
 
     else:
         #request was a POST

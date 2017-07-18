@@ -10,7 +10,7 @@
 
 <script language = 'javascript'>
 function showDiv() {
-   document.getElementById('welcomeDiv').style.display = "block";
+   document.getElementById('loadingDiv').style.display = "block";
 }
 
 </script>
@@ -60,10 +60,20 @@ function showDiv() {
   opacity: 1;
   right: 0;
 }
+
+.loader {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('static/Spin.gif') 50% 50% no-repeat rgb(249,249,249);
+}
   </style>
     <body>
   <h1>Social media web scraper</h1>
-  <div id="welcomeDiv"  style="display:none;" class="answer_list"> Loading... please wait</div>
+  <div id="loadingDiv"  style="display:none;" class="loader"></div>
   <div class=metanav>
 <p>
 Enter domains to scrape:
