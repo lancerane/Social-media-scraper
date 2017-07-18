@@ -9,7 +9,7 @@ oauthlib==0.7.2
 psycopg2==2.6.1
 whitenoise==2.0.6
 lxml==3.6.0
-pandas==0.18.0
+pandas==0.20.3
 urllib3==1.21.1
 socialshares==1.1.0
 beautifulsoup4==4.4.1
