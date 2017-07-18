@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+
+<title>Social media web scraper</title>
+</head>
+
+<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<link rel=stylesheet type=text/css href='{{ url_for('static',filename='style_input_simple.css')}}'>
+
+<script language = 'javascript'>
+function showDiv() {
+   document.getElementById('welcomeDiv').style.display = "block";
+}
+
+</script>
+
+<div class=page>
+  <style>
+  h1 {font-size: 2em;}
+  body { color: black; font-size: 16pt; }
+
+  .button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: orangered;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 24px;
+  font-family: "Inconsolata";
+  padding: 13px;
+  width: 175px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+  </style>
+    <body>
+  <h1>Social media web scraper</h1>
+  <div id="welcomeDiv"  style="display:none;" class="answer_list"> Loading... please wait</div>
+  <div class=metanav>
+<p>
+Enter domains to scrape:
+</p>
+
+<form id='answerform' method='post' action='/' > <!-- action must match your next URL -->
+   <p>
+   domain 1:<input type='text' style="width: 450px" name='domain_1', placeholder='http://www.peoplesmomentum.com/' ><br />
+   domain 2:<input type='text' style="width: 450px" name='domain_2' ><br />
+   domain 3:<input type='text' style="width: 450px" name='domain_3' ><br />
+   domain 4:<input type='text' style="width: 450px" name='domain_4' ><br />
+   domain 5:<input type='text' style="width: 450px" name='domain_5' ><br />
+   <p>
+   and save path:
+   </p>
+   <input type='text' style="width: 450px" name='path' placeholder='/Desktop/share_counts.csv' ><br />
+   </p>
+
+   <p>
+     <button class="button" style="vertical-align:middle" onclick="showDiv()" ><span>go </span></button>
+   <!-- <input type='submit' value='load map' /> <!-the 'value' is the word that will appear on your button.-->
+   </p>
+</form>
+
+
+</div>
+</div>
+</body>
+  </html>
