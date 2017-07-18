@@ -15,7 +15,6 @@ def main():
 
     else:
         #request was a POST
-        # return render_template('wait_screen.html')
         user_domains = [request.form['domain_1'], request.form['domain_2'], request.form['domain_3'], request.form['domain_4'], request.form['domain_5']]
         app.vars['domains'] = [domain for domain in user_domains if domain != '']
         app.vars['path'] = request.form['path']
@@ -31,12 +30,19 @@ def main():
                 dataframe.to_csv(app.vars['path'], index=False)
                 complete_msg += '\nFile saved to \"%s\"' % app.vars['path']
             except:
-                complete_msg += 'Could not save to %s' % app.vars['path']
+                complete_msg += 'Could not save to \"%s\"' % app.vars['path']
         else:
             complete_msg += '\nNo data to save'
 
 
         return render_template('done_screen.html', complete_msg=complete_msg)
+
+@app.route('/files/')
+def files_tut():
+	try:
+		return send_file('test.csv', attachment_filename='test.csv')
+	except Exception as e:
+		return str(e)
 
 if __name__ == "__main__":
     app.run(port=33507)
