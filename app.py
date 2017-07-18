@@ -17,8 +17,6 @@ def main():
         #request was a POST
         user_domains = [request.form['domain_1'], request.form['domain_2'], request.form['domain_3'], request.form['domain_4'], request.form['domain_5']]
         app.vars['domains'] = [domain for domain in user_domains if domain != '']
-        app.vars['path'] = request.form['path']
-
 
         dataframe, unaccessible = scrape_and_aggregate(app.vars['domains'])
         complete_msg = ''
@@ -26,11 +24,10 @@ def main():
             complete_msg += 'Unable to parse: %s.\n' %unaccessible
 
         if dataframe.shape[0] > 0:
-            try:
-                dataframe.to_csv(app.vars['path'], index=False)
-                complete_msg += '\nFile saved to \"%s\"' % app.vars['path']
-            except:
-                complete_msg += 'Could not save to \"%s\"' % app.vars['path']
+
+            dataframe.to_csv('test.csv', index=False)
+            complete_msg += '\nFile ready'
+
         else:
             complete_msg += '\nNo data to save'
 
