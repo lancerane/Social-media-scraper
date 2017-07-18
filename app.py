@@ -37,7 +37,7 @@ def main():
 
         return render_template('done_screen.html', complete_msg=complete_msg)
 
-@app.route('/files/')
+@app.route('/tmp/')
 def files_tut():
 	try:
 		return send_file('test.csv', attachment_filename='test.csv')
