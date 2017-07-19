@@ -8,9 +8,9 @@ from worker import conn
 import time
 from flask_socketio import SocketIO
 # import IPython
-# import logging
-# import sys
-# logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+import logging
+import sys
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -36,14 +36,17 @@ def main():
 
         def emit():
             socketio.emit('some event', {'data': 42})
+        def send():
+            socketio.send('some event')
         def generate():
-            yield "<br/>"
+            yield "<br>"
 
 
         while job.is_finished == False:
             time.sleep(5)
             generate()
             emit()
+            send()
             continue
 
         dataframe = job.result[0]
