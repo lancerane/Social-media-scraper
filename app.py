@@ -44,13 +44,13 @@ def main():
         def foo():
             return Response("<br/>")
 
-
+        t = threading.Thread(target=foo, args=[])
+        t.setDaemon(False)
+        t.start()
 
 
         while job.is_finished == False:
-            t = threading.Thread(target=foo, args=[])
-            t.setDaemon(False)
-            t.start()
+
             time.sleep(10)
             continue
 
