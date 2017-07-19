@@ -1,6 +1,6 @@
 # Entry point for web scraping Flask app
 
-from flask import Flask,render_template,request, send_file, redirect
+from flask import Flask,render_template,request, send_file, redirect, Response
 import pandas as pd
 from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
@@ -39,14 +39,12 @@ def main():
         def send():
             socketio.send('some event')
         def generate():
-            yield "<br>"
+            yield "<br/>"
 
 
         while job.is_finished == False:
             time.sleep(5)
-            generate()
-            emit()
-            send()
+            Response(generate())
             continue
 
         dataframe = job.result[0]
