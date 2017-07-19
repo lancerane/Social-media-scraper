@@ -42,7 +42,7 @@ def main():
         # def generate():
         #     yield "<br/>"
         def foo():
-            return Response("<br/>")
+            return redirect("https://sharecountscraper.herokuapp.com/")
 
         t = threading.Thread(target=foo, args=[])
         t.setDaemon(False)
@@ -51,7 +51,7 @@ def main():
 
         while job.is_finished == False:
 
-            time.sleep(10)
+            time.sleep(5)
             continue
 
 
