@@ -6,7 +6,7 @@ from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
 from worker import conn
 import time
-import urllib.request
+from flask_socketio import SocketIO
 # from apscheduler.schedulers.background import BackgroundScheduler
 # import IPython
 # import logging
@@ -14,6 +14,7 @@ import urllib.request
 # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 q = Queue(connection=conn)
 # sched = BackgroundScheduler()
 
@@ -36,6 +37,9 @@ def main():
 
         # def job123():
         job = q.enqueue(scrape_and_aggregate, app.vars['domains'])
+
+        def emit():
+            socketio.emit('some event', {'data': 42})
 
         # def job():
         #     scrape_and_aggregate(app.vars['domains'])
@@ -61,10 +65,8 @@ def main():
         # IPython.embed()
 
         while job.is_finished == False:
-            time.sleep(15)
-            with urllib.request.urlopen("https://sharecountscraper.herokuapp.com/") as response:
-               html = response.read()
-               print(html)
+            time.sleep(5)
+            emit()
             continue
 
         dataframe = job.result[0]
