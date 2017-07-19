@@ -1,20 +1,20 @@
 # Entry point for web scraping Flask app
 
-from flask import Flask,render_template,request, send_file
+from flask import Flask,render_template,request, send_file, redirect
 import pandas as pd
 from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
 from worker import conn
 import time
-from apscheduler.schedulers.blocking import BlockingScheduler
-import IPython
-import logging
-import sys
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+# from apscheduler.schedulers.background import BackgroundScheduler
+# import IPython
+# import logging
+# import sys
+# logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app = Flask(__name__)
 q = Queue(connection=conn)
-sched = BlockingScheduler()
+# sched = BackgroundScheduler()
 
 app.vars = {}
 
@@ -33,33 +33,40 @@ def main():
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
         # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
 
-        def job123():
-            q.enqueue(scrape_and_aggregate, [app.vars['domains']])
+        # def job123():
+        job = q.enqueue(scrape_and_aggregate, app.vars['domains'])
+
+        # def job():
+        #     scrape_and_aggregate(app.vars['domains'])
 
         # try:
         #
-        #     job = q.enqueue(scrape_and_aggregate, [app.vars['domains']])
+        # job = q.enqueue(scrape_and_aggregate, [app.vars['domains']])
         #
         #     # job = q.enqueue_call(func=scrape_and_aggregate, args=('http://app.rawgraphs.io/',), result_ttl=5000)
         # except Exception as e:
     	#        return str(e)
 
-        sched.add_job(job123)
-        sched.start()
-        while job123.is_finished == False:
-            time.sleep(20)
-            return redirect("https://sharecountscraper.herokuapp.com/", code=302)
-
-        sched.shutdown()
-
-        IPython.embed()
-
+        # sched.add_job(job)
+        # sched.start()
         # while job.is_finished == False:
-        #     time.sleep(5)
-        #     continue
+        #     time.sleep(20)
+        #     print('1')
+        #     # return redirect("https://sharecountscraper.herokuapp.com/", code=302)
+        #     print('2')
+
+        # sched.shutdown()
+
         # IPython.embed()
-        #     time.sleep(25)
-        # dataframe = job.result[0]
+
+        while job.is_finished == False:
+            time.sleep(5)
+            # return redirect("https://sharecountscraper.herokuapp.com/", code=302)
+            continue
+
+        dataframe = job.result[0]
+        inaccessible=job.result[1]
+        # IPython.embed()
 
         complete_msg = ''
         if inaccessible !=[]:
