@@ -8,9 +8,9 @@ from worker import conn
 import time
 from flask_socketio import SocketIO
 # import IPython
-import logging
-import sys
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+# import logging
+# import sys
+# logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
