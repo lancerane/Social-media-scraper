@@ -41,7 +41,6 @@ def scrape_and_aggregate(domains):
 
     for url in urls:
         # Find any '//' after http:// and convert to '/'
-        yield 'yo'
         idx = url.find('/')
         cleaned_url = url[:idx+1] + url[idx+1:].replace('//', '/')
         try:

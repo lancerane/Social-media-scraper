@@ -35,23 +35,23 @@ def main():
 
         job = q.enqueue(scrape_and_aggregate, app.vars['domains'])
 
-        def emit():
-            socketio.emit('some event', {'data': 42})
-        def send():
-            socketio.send('some event')
-        def generate():
-            yield "<br/>"
+        # def emit():
+        #     socketio.emit('some event', {'data': 42})
+        # def send():
+        #     socketio.send('some event')
+        # def generate():
+        #     yield "<br/>"
         def foo():
-            return Response(generate())
+            return Response("<br/>")
+
+
 
 
         while job.is_finished == False:
             t = threading.Thread(target=foo, args=[])
             t.setDaemon(False)
             t.start()
-            time.sleep(15)
-
-
+            time.sleep(10)
             continue
 
 
