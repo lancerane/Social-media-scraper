@@ -44,8 +44,8 @@ def main():
 
         while job.is_finished == False:
             time.sleep(5)
-            a = Response(generate())
-            print(a)
+            Response(generate())
+
             continue
 
         dataframe = job.result[0]
