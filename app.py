@@ -6,9 +6,15 @@ from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
 from worker import conn
 import time
+from apscheduler.schedulers.blocking import BlockingScheduler
+import IPython
+import logging
+import sys
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app = Flask(__name__)
 q = Queue(connection=conn)
+sched = BlockingScheduler()
 
 app.vars = {}
 
@@ -27,18 +33,33 @@ def main():
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
         # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
 
-        try:
+        def job123():
+            q.enqueue(scrape_and_aggregate, [app.vars['domains']])
 
-            job = q.enqueue(scrape_and_aggregate, [app.vars['domains']])
+        # try:
+        #
+        #     job = q.enqueue(scrape_and_aggregate, [app.vars['domains']])
+        #
+        #     # job = q.enqueue_call(func=scrape_and_aggregate, args=('http://app.rawgraphs.io/',), result_ttl=5000)
+        # except Exception as e:
+    	#        return str(e)
 
-            # job = q.enqueue_call(func=scrape_and_aggregate, args=('http://app.rawgraphs.io/',), result_ttl=5000)
-        except Exception as e:
-    	       return str(e)
+        sched.add_job(job123)
+        sched.start()
+        while job123.is_finished == False:
+            time.sleep(20)
+            return redirect("https://sharecountscraper.herokuapp.com/", code=302)
 
+        sched.shutdown()
 
-        while job.is_finished == False:
-            time.sleep(25)
-        dataframe = job.result[0]
+        IPython.embed()
+
+        # while job.is_finished == False:
+        #     time.sleep(5)
+        #     continue
+        # IPython.embed()
+        #     time.sleep(25)
+        # dataframe = job.result[0]
 
         complete_msg = ''
         if inaccessible !=[]:
