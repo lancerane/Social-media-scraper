@@ -7,6 +7,7 @@ from rq import Queue
 from worker import conn
 import time
 from flask_socketio import SocketIO
+import threading
 # import IPython
 # import logging
 # import sys
@@ -40,16 +41,24 @@ def main():
             socketio.send('some event')
         def generate():
             yield "<br/>"
+        def foo():
+            return Response(generate())
 
 
         while job.is_finished == False:
-            time.sleep(5)
-            Response(generate())
+            t = threading.Thread(target=foo, args=[])
+            t.setDaemon(False)
+            t.start()
+            time.sleep(15)
+
 
             continue
 
+
         dataframe = job.result[0]
         inaccessible=job.result[1]
+
+        # IPython.embed()
 
         complete_msg = ''
         if inaccessible !=[]:
