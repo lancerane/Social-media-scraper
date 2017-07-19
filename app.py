@@ -6,6 +6,7 @@ from scrape_and_aggregate import scrape_and_aggregate
 from rq import Queue
 from worker import conn
 import time
+import urllib.request
 # from apscheduler.schedulers.background import BackgroundScheduler
 # import IPython
 # import logging
@@ -60,9 +61,10 @@ def main():
         # IPython.embed()
 
         while job.is_finished == False:
-            time.sleep(5)
+            time.sleep(15)
             # return redirect("https://sharecountscraper.herokuapp.com/", code=302)
-            # return redirect("http://127.0.0.1:33507/", code=302)
+            with urllib.request.urlopen("https://sharecountscraper.herokuapp.com/") as response:
+               html = response.read()
             continue
 
         dataframe = job.result[0]
