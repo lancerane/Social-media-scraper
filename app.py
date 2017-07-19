@@ -7,7 +7,6 @@ from rq import Queue
 from worker import conn
 import time
 from flask_socketio import SocketIO
-# from apscheduler.schedulers.background import BackgroundScheduler
 # import IPython
 # import logging
 # import sys
@@ -16,8 +15,6 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
 q = Queue(connection=conn)
-# sched = BackgroundScheduler()
-
 app.vars = {}
 
 @app.route('/', methods=['GET','POST'])
@@ -35,37 +32,17 @@ def main():
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
         # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
 
-        # def job123():
         job = q.enqueue(scrape_and_aggregate, app.vars['domains'])
 
         def emit():
             socketio.emit('some event', {'data': 42})
+        def generate():
+            yield "<br/>"
 
-        # def job():
-        #     scrape_and_aggregate(app.vars['domains'])
-
-        # try:
-        #
-        # job = q.enqueue(scrape_and_aggregate, [app.vars['domains']])
-        #
-        #     # job = q.enqueue_call(func=scrape_and_aggregate, args=('http://app.rawgraphs.io/',), result_ttl=5000)
-        # except Exception as e:
-    	#        return str(e)
-
-        # sched.add_job(job)
-        # sched.start()
-        # while job.is_finished == False:
-        #     time.sleep(20)
-        #     print('1')
-        #     # return redirect("https://sharecountscraper.herokuapp.com/", code=302)
-        #     print('2')
-
-        # sched.shutdown()
-
-        # IPython.embed()
 
         while job.is_finished == False:
             time.sleep(5)
+            generate()
             emit()
             continue
 
