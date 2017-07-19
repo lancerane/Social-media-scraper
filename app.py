@@ -62,14 +62,13 @@ def main():
 
         while job.is_finished == False:
             time.sleep(15)
-            # return redirect("https://sharecountscraper.herokuapp.com/", code=302)
             with urllib.request.urlopen("https://sharecountscraper.herokuapp.com/") as response:
                html = response.read()
+               print(html)
             continue
 
         dataframe = job.result[0]
         inaccessible=job.result[1]
-        # IPython.embed()
 
         complete_msg = ''
         if inaccessible !=[]:
