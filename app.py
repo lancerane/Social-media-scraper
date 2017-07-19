@@ -62,6 +62,7 @@ def main():
         while job.is_finished == False:
             time.sleep(5)
             # return redirect("https://sharecountscraper.herokuapp.com/", code=302)
+            # return redirect("http://127.0.0.1:33507/", code=302)
             continue
 
         dataframe = job.result[0]

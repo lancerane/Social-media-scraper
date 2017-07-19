@@ -4,7 +4,7 @@ def scrape_and_aggregate(domains):
     import urllib.request
     import socialshares
     import pandas as pd
-    import IPython
+    # import IPython
 
     # Try to convert each url into a html document
     urls = []
