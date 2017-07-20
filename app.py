@@ -44,12 +44,13 @@ def main():
         def foo():
             return redirect("https://sharecountscraper.herokuapp.com/")
 
-        t = threading.Thread(target=foo, args=[])
-        t.setDaemon(False)
-        t.start()
+
 
 
         while job.is_finished == False:
+            t = threading.Thread(target=foo, args=[])
+            t.setDaemon(False)
+            t.start()
 
             time.sleep(5)
             continue
