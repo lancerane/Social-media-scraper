@@ -30,36 +30,23 @@ def main():
         user_domains = [request.form['domain_1'], request.form['domain_2'], request.form['domain_3'], request.form['domain_4'], request.form['domain_5']]
         app.vars['domains'] = [domain for domain in user_domains if domain != '']
 
-        # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
-        # dataframe, inaccessible = scrape_and_aggregate(app.vars['domains'])
-
+        # Run scraper and aggregate share counts into a dataframe
+	# Put the scraping into a background process
         job = q.enqueue(scrape_and_aggregate, app.vars['domains'])
-
-        # def emit():
-        #     socketio.emit('some event', {'data': 42})
-        # def send():
-        #     socketio.send('some event')
-        # def generate():
-        #     yield "<br/>"
-        def foo():
-            return redirect("https://sharecountscraper.herokuapp.com/")
-
-
-
-
+	
+	# Function for foreground activity
+        def emit():
+            socketio.emit('some event', {'data': 42})
+	
+	# Check if the job's done. If not, maintain some activity to keep the server open
         while job.is_finished == False:
-            t = threading.Thread(target=foo, args=[])
-            t.setDaemon(False)
-            t.start()
-
+            emit()
             time.sleep(10)
             continue
-
-
+	
+	# When done, get the results
         dataframe = job.result[0]
         inaccessible=job.result[1]
-
-        # IPython.embed()
 
         complete_msg = ''
         if inaccessible !=[]:
