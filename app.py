@@ -52,7 +52,7 @@ def main():
             t.setDaemon(False)
             t.start()
 
-            time.sleep(5)
+            time.sleep(10)
             continue
 
 
