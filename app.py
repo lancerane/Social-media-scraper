@@ -25,6 +25,7 @@ def main():
         user_domains = [request.form['domain_1'], request.form['domain_2'], request.form['domain_3'], request.form['domain_4'], request.form['domain_5']]
         domains = [domain for domain in user_domains if domain != '']
 
+<<<<<<< HEAD
         # Run scraper and aggregate share counts into a dataframe. Enqueue the function for a background process
         task = q.enqueue(scrape_and_aggregate, domains, timeout=1800)
 
@@ -74,6 +75,29 @@ def add_results():
     dataframe = task.result[0]
     inaccessible = task.result[1]
     task.delete()
+=======
+        # Run scraper and aggregate share counts into a dataframe
+	# Put the scraping into a background process
+        job = q.enqueue(scrape_and_aggregate, app.vars['domains'])
+	
+	# Function for foreground activity
+        def emit():
+            socketio.emit('some event', {'data': 42})
+	
+	# Check if the job's done. If not, maintain some activity to keep the server open
+        while job.is_finished == False:
+            emit()
+            time.sleep(10)
+            continue
+	
+	# When done, get the results
+        dataframe = job.result[0]
+        inaccessible=job.result[1]
+
+        complete_msg = ''
+        if inaccessible !=[]:
+            complete_msg += 'Unable to parse: %s.\n' %inaccessible
+>>>>>>> 2c33b59f70858be95ba9ee1714a850ec4b01e674
 
     complete_msg = ''
 
