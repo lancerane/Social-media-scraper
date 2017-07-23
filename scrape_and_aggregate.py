@@ -2,7 +2,7 @@ def scrape_and_aggregate(domains):
 
     from bs4 import BeautifulSoup
     import urllib.request
-    import requests
+    # import requests
     import socialshares
     import pandas as pd
 
@@ -38,7 +38,7 @@ def scrape_and_aggregate(domains):
                 continue
 
     # Run each url through SM apis to get share counts. Collect in a dictionary
-    dct = {'URL':[], 'Modified date':[], 'Facebook':[], 'Pinterest':[], 'Google':[], 'Linkedin':[]}
+    dct = {'URL':[], 'Facebook':[], 'Pinterest':[], 'Google':[], 'Linkedin':[]}
 
     for url in urls:
         # Find any '//' after http:// and convert to '/'
@@ -54,11 +54,11 @@ def scrape_and_aggregate(domains):
 
         dct['URL'].append(cleaned_url)
 
-        try:
-            header = requests.head(cleaned_url).headers
-            dct['Modified date'].append(header['Last-Modified'])
-        except:
-            dct['Modified date'].append('n/a')
+        # try:
+        #     header = requests.head(cleaned_url).headers
+        #     dct['Modified date'].append(header['Last-Modified'])
+        # except:
+        #     dct['Modified date'].append('n/a')
 
         if 'facebook' in counts:
             dct['Facebook'].append(counts['facebook']['share_count'])
@@ -78,7 +78,6 @@ def scrape_and_aggregate(domains):
             dct['Linkedin'].append('n/a')
 
     dataframe = pd.DataFrame(dct)
-    dataframe = dataframe.set_index('Modified date').reset_index()
     dataframe = dataframe.set_index('URL').reset_index()
 
     return dataframe, inaccessible
