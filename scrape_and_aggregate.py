@@ -2,6 +2,7 @@ def scrape_and_aggregate(domains):
 
     from bs4 import BeautifulSoup
     import urllib.request
+    import requests
     import socialshares
     import pandas as pd
 
@@ -37,12 +38,13 @@ def scrape_and_aggregate(domains):
                 continue
 
     # Run each url through SM apis to get share counts. Collect in a dictionary
-    dct = {'URL':[], 'facebook':[], 'pinterest':[], 'google':[], 'linkedin':[]}
+    dct = {'URL':[], 'Modified date':[], 'Facebook':[], 'Pinterest':[], 'Google':[], 'Linkedin':[]}
 
     for url in urls:
         # Find any '//' after http:// and convert to '/'
         idx = url.find('/')
         cleaned_url = url[:idx+1] + url[idx+1:].replace('//', '/')
+
         try:
             counts = socialshares.fetch(cleaned_url, ['facebook', 'pinterest', 'google', 'linkedin']) # can also query reddit, but unreliable
 
@@ -51,24 +53,32 @@ def scrape_and_aggregate(domains):
             continue
 
         dct['URL'].append(cleaned_url)
+
+        try:
+            header = requests.head(cleaned_url).headers
+            dct['Modified date'].append(header['Last-Modified'])
+        except:
+            dct['Modified date'].append('n/a')
+
         if 'facebook' in counts:
-            dct['facebook'].append(counts['facebook']['share_count'])
+            dct['Facebook'].append(counts['facebook']['share_count'])
         else:
-            dct['facebook'].append('na')
+            dct['Facebook'].append('n/a')
         if 'pinterest' in counts:
-            dct['pinterest'].append(counts['pinterest'])
+            dct['Pinterest'].append(counts['pinterest'])
         else:
-            dct['pinterest'].append('na')
+            dct['Pinterest'].append('n/a')
         if 'google' in counts:
-            dct['google'].append(counts['google'])
+            dct['Google'].append(counts['google'])
         else:
-            dct['google'].append('na')
+            dct['Google'].append('n/a')
         if 'linkedin' in counts:
-            dct['linkedin'].append(counts['linkedin'])
+            dct['Linkedin'].append(counts['linkedin'])
         else:
-            dct['linkedin'].append('na')
+            dct['Linkedin'].append('n/a')
 
     dataframe = pd.DataFrame(dct)
+    dataframe = dataframe.set_index('Modified date').reset_index()
     dataframe = dataframe.set_index('URL').reset_index()
 
     return dataframe, inaccessible
