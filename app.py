@@ -31,37 +31,23 @@ def main():
         app.vars['domains'] = [domain for domain in user_domains if domain != '']
 
         # Run scraper and aggregate share counts into a dataframe. Inaccessible gives restricted domains
-        task = q.enqueue(scrape_and_aggregate, app.vars['domains'])
-        # task = scrape_and_aggregate(app.vars['domains'])
-
-        # task = add_jobs(scrape_and_aggregate(app.vars['domains']))
+        task = q.enqueue(scrape_and_aggregate, app.vars['domains'], timeout=1800)
 
     return redirect('/results?tid=' + task.id)
-
-# @app.route('/load')
-# def load():
-#     task_id = request.args.get('tid')
-#     return render_template('domain_enter.html', task_id=task_id) if task_id else redirect('/')
 
 @app.route('/poll')
 def add_poll():
     """Called by the progress page using AJAX to check whether the task is complete."""
     task_id = request.args.get('tid')
     try:
-        # task = add.get_task(task_id)
         task = q.fetch_job(task_id)
     except ConnectionError:
         # Return the error message as an HTTP 500 error
-        return 'Coult not connect to the task queue. Check to make sure that <strong>redis-server</strong> is running and try again.', 500
+        return 'Coult not connect to the task queue. Please try again', 500
 
-    if task.is_finished == False:
-        # emit()
-        time.sleep(20)
-        # continue
-    # ready = task.return_value is not None if task else None
+    while task.is_finished == False:
+        time.sleep(10)
 
-
-    # return jsonify(ready=ready)
     return redirect('/results?tid=' + task.id)
 
 @app.route('/results')
@@ -74,22 +60,11 @@ def add_results():
 
     if task.is_finished==False:
         return redirect('/poll?tid=' + task_id)
-    # task.delete()
-    # Redis can also be used to cache results
-    # return render_template('results.html', value=result)
 
-    # job = session.get(job, None)
-    #
-    # def emit():
-    #     socketio.emit('some event', {'data': 42})
-    #
-    # while job.is_finished == False:
-    #     emit()
-    #     time.sleep(10)
-    #     continue
 
     dataframe = task.result[0]
     inaccessible = task.result[1]
+    task.delete()
 
     complete_msg = ''
     if inaccessible !=[]:
