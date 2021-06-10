@@ -1,5 +1,5 @@
 dj-database-url==0.4.0
-Django==1.9.2
+Django==2.2.24
 dill==0.2.1
 Flask==0.10.1
 gunicorn==19.3.0
